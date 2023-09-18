@@ -4,8 +4,8 @@
     v-model:visible="visible"
     :width="625"
     :mask-closable="false"
-    unmount-on-close
     @before-ok="save"
+    @close="close"
   >
     <a-form ref="FormRef" :model="form" :rules="rules" auto-label-width>
       <a-form-item label="菜单类型" field="type">
@@ -33,7 +33,7 @@
       <a-row :gutter="16">
         <a-col :span="12">
           <a-form-item label="自定义图标" field="svgIcon">
-            <a-input v-model="form.svgIcon" placeholder="请输入菜单标题" />
+            <a-input v-model="form.svgIcon" placeholder="请输入自定义图标名称" />
             <a-tooltip content="优先显示">
               <icon-question-circle-fill :size="18" style="color: rgba(var(--warning-6)); margin-left: 8px" />
             </a-tooltip>
@@ -51,14 +51,17 @@
       </a-form-item>
 
       <a-form-item label="路由路径" field="path">
-        <a-input v-model="form.path" placeholder="请输入路由地址" />
+        <a-input v-model="form.path" placeholder="请输入路由路径" />
+        <template #extra>
+          <div>菜单名称由系统自动生成：{{ routeName }}</div>
+        </template>
       </a-form-item>
 
       <a-form-item v-if="form.type === 1" label="重定向" field="redirect">
         <a-input v-model="form.redirect" placeholder="请输入重定向地址" />
       </a-form-item>
 
-      <a-form-item label="是否外链">
+      <a-form-item label="是否外链" field="isExternalUrl">
         <a-radio-group v-model="isExternalUrl" type="button">
           <a-radio :value="true">是</a-radio>
           <a-radio :value="false">否</a-radio>
@@ -126,7 +129,7 @@
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item label="Tab栏" field="affix">
+          <a-form-item label="Tab栏" field="affix" v-if="form.type === 2">
             <a-switch
               type="round"
               v-model="form.affix"
@@ -151,6 +154,7 @@ import type { FormInstance } from '@arco-design/web-vue'
 import { getSystemMenuDetail, saveSystemMenu, type MenuItem } from '@/apis'
 import { Message } from '@arco-design/web-vue'
 import { isExternal } from '@/utils/validate'
+import { transformPathToName } from '@/utils/common'
 
 interface Props {
   menus: MenuItem[]
@@ -162,7 +166,8 @@ const FormRef = ref<FormInstance>()
 
 const menuId = ref('')
 const visible = ref(false)
-const title = computed(() => (!!menuId.value ? '编辑菜单' : '新增菜单'))
+const isEdit = computed(() => !!menuId.value)
+const title = computed(() => (isEdit.value ? '编辑菜单' : '新增菜单'))
 
 const isExternalUrl = ref(false)
 const form = reactive({
@@ -182,13 +187,12 @@ const form = reactive({
   breadcrumb: true,
   affix: true
 })
+const routeName = computed(() => transformPathToName(form.path))
 
 const rules = {
   title: [{ required: true, message: '请输入菜单标题' }],
-  path: [{ required: true, message: '请输入路由地址' }],
-  name: [{ required: true, message: '请输入组件名称' }],
-  component: [{ required: true, message: '请输入组件路径' }],
-  sort: [{ required: true, message: '请输入菜单排序' }]
+  path: [{ required: true, message: '请输入路由路径' }],
+  component: [{ required: true, message: '请输入组件路径' }]
 }
 
 const add = () => {
@@ -204,6 +208,10 @@ const edit = async (id: string) => {
     isExternalUrl.value = true
   }
   visible.value = true
+}
+
+const close = () => {
+  FormRef.value?.resetFields()
 }
 
 defineExpose({ add, edit })
