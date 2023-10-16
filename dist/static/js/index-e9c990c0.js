@@ -1,0 +1,1 @@
+import{d as a,W as s,o,c as e,x as t,i,q as r}from"./index-a8b44d5f.js";const n={class:"gi-footer"},d=r(a({name:"GiFooter",__name:"index",setup(a){const r=s(new Date).format("YYYY");return(a,s)=>(o(),e("div",n,"Copyright "+t(i(r))+" Gi Admin Pro",1))}}),[["__scopeId","data-v-4edc619a"]]);export{d as _};
