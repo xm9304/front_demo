@@ -5,13 +5,16 @@
     :auto-label-width="options.form.autoLabelWidth || true"
     :model="modelValue"
   >
-    <a-row :gutter="12">
+    <a-row v-bind="options.row">
       <a-col v-for="item in options.columns" :key="item.field" :span="item.span || 12" v-bind="item.col">
-        <a-form-item :label="item.label" :field="item.field" :rules="item.rules" :extra="item.extra">
+        <a-form-item v-bind="item.item" :label="item.label" :field="item.field" :rules="item.rules">
           <slot :name="item.field">
             <template v-if="item.type === 'input'">
               <a-input
-                v-bind="{...(item.props as A.InputInstance['$props']), allowClear: item.props?.allowClear || true }"
+                :allow-clear="true"
+                :placeholder="`请输入${item.label}`"
+                :max-length="20"
+                v-bind="(item.props as A.InputInstance['$props'])"
                 :model-value="modelValue[item.field as keyof typeof modelValue]"
                 @update:model-value="valueChange($event, item.field)"
               ></a-input>
@@ -19,7 +22,10 @@
 
             <template v-if="item.type === 'select'">
               <a-select
-                v-bind="{...(item.props as A.SelectInstance['$props']), allowClear: item.props?.allowClear || true}"
+                :allow-clear="true"
+                :placeholder="`请输入${item.label}`"
+                v-bind="(item.props as A.SelectInstance['$props'])"
+                :options="(item.options as A.SelectInstance['$props']['options'])"
                 :model-value="modelValue[item.field as keyof typeof modelValue]"
                 @update:model-value="valueChange($event, item.field)"
               ></a-select>
@@ -27,7 +33,8 @@
 
             <template v-if="item.type === 'radio-group'">
               <a-radio-group
-                v-bind="{...(item.props as A.RadioGroupInstance['$props'])}"
+                v-bind="(item.props as A.RadioGroupInstance['$props'])"
+                :options="(item.options as A.RadioGroupInstance['$props']['options'])"
                 :model-value="modelValue[item.field as keyof typeof modelValue]"
                 @update:model-value="valueChange($event, item.field)"
               ></a-radio-group>
@@ -35,7 +42,8 @@
 
             <template v-if="item.type === 'checkbox-group'">
               <a-checkbox-group
-                v-bind="{...(item.props as A.CheckboxGroupInstance['$props'])}"
+                v-bind="(item.props as A.CheckboxGroupInstance['$props'])"
+                :options="(item.options as A.CheckboxGroupInstance['$props']['options'])"
                 :model-value="modelValue[item.field as keyof typeof modelValue]"
                 @update:model-value="valueChange($event, item.field)"
               ></a-checkbox-group>
@@ -43,7 +51,8 @@
 
             <template v-if="item.type === 'input-number'">
               <a-input-number
-                v-bind="{...(item.props as A.InputNumberInstance['$props'])}"
+                :placeholder="`请输入${item.label}`"
+                v-bind="(item.props as A.InputNumberInstance['$props'])"
                 :model-value="modelValue[item.field as keyof typeof modelValue]"
                 @update:model-value="valueChange($event, item.field)"
               ></a-input-number>
@@ -51,7 +60,11 @@
 
             <template v-if="item.type === 'textarea'">
               <a-textarea
-                v-bind="{...(item.props as A.TextareaInstance['$props']), allowClear: item.props?.allowClear || true}"
+                :allow-clear="true"
+                :placeholder="`请填写${item.label}`"
+                :max-length="200"
+                :auto-size="{ minRows: 4, maxRows: 10 }"
+                v-bind="(item.props as A.TextareaInstance['$props'])"
                 :model-value="modelValue[item.field as keyof typeof modelValue]"
                 @update:model-value="valueChange($event, item.field)"
               ></a-textarea>
@@ -59,7 +72,10 @@
 
             <template v-if="item.type === 'date-picker'">
               <a-date-picker
-                v-bind="{...(item.props as A.DatePickerInstance['$props']), allowClear: item.props?.allowClear || true}"
+                class="w-full"
+                :allow-clear="true"
+                :placeholder="`请选择日期`"
+                v-bind="(item.props as A.DatePickerInstance['$props'])"
                 :model-value="modelValue[item.field as keyof typeof modelValue]"
                 @update:model-value="valueChange($event, item.field)"
               ></a-date-picker>

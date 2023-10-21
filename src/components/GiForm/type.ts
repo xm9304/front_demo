@@ -1,4 +1,5 @@
 import type * as A from '@arco-design/web-vue'
+import { Row } from '@arco-design/web-vue'
 
 export type FormType =
   | 'input'
@@ -21,19 +22,25 @@ interface ColumnsItem extends Partial<Pick<CommonProps, 'placeholder' | 'disable
   field: A.FormItemInstance['field']
   span?: number
   col?: A.ColProps
+  item?: A.FormItemInstance['$props']
   props?:
     | A.InputInstance['$props']
     | A.SelectInstance['$props']
     | A.TextareaInstance['$props']
     | A.DatePickerInstance['$props']
     | A.RadioGroupInstance['$props']
+    | A.CheckboxGroupInstance['$props']
     | A.InputNumberInstance['$props']
   rules?: A.FormItemInstance['$props']['rules']
-  extra?: A.FormItemInstance['$props']['extra']
+  options?:
+    | A.SelectInstance['$props']['options']
+    | A.RadioGroupInstance['$props']['options']
+    | A.CheckboxGroupInstance['$props']['options']
 }
 
 export interface Options {
   form: Pick<A.FormInstance['$props'], 'size' | 'layout' | 'disabled' | 'rules' | 'autoLabelWidth'>
+  row?: InstanceType<typeof Row>
   columns: ColumnsItem[]
   btns?: { hide?: boolean }
 }
