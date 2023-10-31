@@ -3,7 +3,7 @@
     <a-row :gutter="14" v-bind="options.row" class="w-full">
       <template v-for="(item, index) in options.columns" :key="item.field">
         <a-col
-          v-if="!item.hide"
+          v-if="!isHide(item.hide)"
           :span="item.span || 12"
           v-bind="item.col"
           v-show="index <= (options.fold?.index || 0) || (index >= (options.fold?.index || 0) && !collapsed)"
@@ -47,7 +47,7 @@
                   :allow-clear="true"
                   :placeholder="`请选择${item.label}`"
                   v-bind="(item.props as A.SelectInstance['$props'])"
-                  :options="(item.options as A.SelectInstance['$props']['options'])"
+                  :options="dicData[item.field] || (item.options as A.SelectInstance['$props']['options'])"
                   :model-value="modelValue[item.field as keyof typeof modelValue]"
                   @update:model-value="valueChange($event, item.field)"
                 ></a-select>
@@ -166,8 +166,9 @@
 </template>
 
 <script setup lang="ts">
-import type { Options } from './type'
+import type { Options, ColumnsItemHide, ColumnsItem } from './type'
 import type * as A from '@arco-design/web-vue'
+import _ from 'lodash'
 
 interface Props {
   modelValue: object
@@ -188,8 +189,56 @@ const valueChange = (value: any, field: string) => {
 
 const collapsed = ref(false)
 const formRef = ref<A.FormInstance>()
-
 defineExpose({ formRef })
+
+const isHide = (hide?: ColumnsItemHide) => {
+  if (hide === undefined) return false
+  if (typeof hide === 'boolean') return hide
+  if (typeof hide === 'function') {
+    return hide(props.modelValue)
+  }
+}
+
+const dicData: Record<string, any> = reactive({})
+props.options.columns.forEach((item) => {
+  if (item.request && typeof item.request === 'function' && item?.init) {
+    item.request(props.modelValue).then((res) => {
+      dicData[item.field] = item.resultFormat ? item.resultFormat(res) : res.data
+      console.log('dicData', dicData)
+    })
+  }
+})
+
+// 先找出有级联的项
+// 如果这个字段改变了值，那么就找出它的cascader属性对应的字段项，去请求里面的request
+const hasCascaderColumns: ColumnsItem[] = []
+props.options.columns.forEach((item) => {
+  const arr = hasCascaderColumns.map((i) => i.field)
+  if (item.cascader?.length && !arr.includes(item.field)) {
+    hasCascaderColumns.push(item)
+  }
+})
+
+// 要深克隆，否则无法监听新旧值变化
+const cloneForm = computed(() => _.cloneDeep(props.modelValue))
+
+watch(cloneForm as any, (newVal, oldVal) => {
+  hasCascaderColumns.forEach((item) => {
+    if (newVal[item.field] !== oldVal[item.field]) {
+      const arr = props.options.columns.filter((a) => {
+        return item?.cascader?.includes(a.field)
+      })
+      arr.forEach((i) => {
+        emit('update:modelValue', Object.assign(props.modelValue, { [i.field]: '' }))
+        if (i.request && Boolean(newVal[item.field])) {
+          i.request(props.modelValue).then((res) => {
+            dicData[i.field] = i.resultFormat ? i.resultFormat(res) : res.data
+          })
+        }
+      })
+    }
+  })
+})
 </script>
 
 <style lang="scss" scoped></style>

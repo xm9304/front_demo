@@ -1,10 +1,10 @@
 <template>
-  <a-card title="配置表单-新增">
+  <a-card title="配置表单-动态级联">
     <template #extra>
-      <a-button type="primary" status="warning" @click="onViewCode">
+      <!-- <a-button type="primary" status="warning" @click="onViewCode">
         <template #icon><icon-code /></template>
         <span>查看JSON配置</span>
-      </a-button>
+      </a-button> -->
     </template>
     <a-row :gutter="30">
       <a-col :xs="24" :sm="24" :md="12">
@@ -12,7 +12,7 @@
           <template #btns>
             <a-row justify="end" class="w-full">
               <a-space>
-                <a-button type="primary" @click="save">保存</a-button>
+                <a-button type="primary" @click="save">提交</a-button>
                 <a-button @click="reset">重置</a-button>
               </a-space>
             </a-row>
@@ -20,6 +20,7 @@
         </GiForm>
       </a-col>
       <a-col :xs="24" :sm="24" :md="12">
+        <a-alert type="warning" class="gi_mb">具体配置看源码</a-alert>
         <GiCodeView :code-json="JSON.stringify(form, null, '\t')"></GiCodeView>
       </a-col>
     </a-row>
@@ -33,20 +34,14 @@ import GiCodeView from '@/components/GiCodeView/index.vue'
 import GiForm from '@/components/GiForm/index.vue'
 import * as Regexp from '@/utils/regexp'
 import { isPhone } from '@/utils/common'
-import { cityOptions, deptData } from './data'
+import { getAreaList } from '@/apis'
 
 const form = reactive({
   name: '',
   phone: '',
-  sort: 0,
-  sex: '',
-  birthday: '',
-  hobbys: [],
-  status: 1,
-  mark: 0,
-  hide: false,
-  grade: 0,
-  remark: ''
+  province: '',
+  city: '',
+  region: ''
 })
 
 const formRef = ref<InstanceType<typeof GiForm>>()
@@ -84,94 +79,30 @@ const options: Options = reactive({
     },
     {
       type: 'select',
-      label: '性别',
-      field: 'sex',
-      col: { xs: 24, sm: 12 },
-      options: [
-        { label: '男', value: 1 },
-        { label: '女', value: 0 }
-      ]
+      label: '省',
+      field: 'province',
+      col: { xs: 24, sm: 8 },
+      request: () => getAreaList({ type: 'province' }),
+      resultFormat: (res) => res.data.map((i: any) => ({ label: i.label, value: i.code })),
+      cascader: ['city'],
+      init: true
     },
     {
-      type: 'date-picker',
-      label: '生日',
-      field: 'birthday',
-      col: { xs: 24, sm: 12 }
-    },
-    {
-      type: 'checkbox-group',
-      label: '爱好',
-      field: 'hobbys',
-      col: { xs: 24 },
-      options: [
-        { label: '电影', value: '01' },
-        { label: '音乐', value: '02' },
-        { label: '旅行', value: '03' },
-        { label: '游戏', value: '04' }
-      ]
-    },
-    {
-      type: 'input-number',
-      label: '排序',
-      field: 'sort',
-      col: { xs: 24, sm: 12 },
-      props: {
-        min: 0
-      }
-    },
-    {
-      type: 'radio-group',
-      label: '状态',
-      field: 'status',
-      col: { xs: 24, sm: 12 },
-      options: [
-        { label: '启用', value: 1 },
-        { label: '禁用', value: 0 }
-      ]
-    },
-    {
-      type: 'rate',
-      label: '评分',
-      field: 'mark',
-      col: { xs: 24, sm: 12 }
-    },
-    {
-      type: 'switch',
-      label: '是否隐藏',
-      field: 'hide',
-      col: { xs: 24, sm: 12 },
-      item: { extra: '隐藏成绩项' }
-    },
-    {
-      type: 'slider',
-      label: '成绩',
-      field: 'grade',
-      col: { xs: 24, sm: 24 },
-      hide: (i: typeof form) => {
-        i.hide && (i.grade = 0)
-        return i.hide === true
-      }
-    },
-    {
-      type: 'cascader',
-      label: '城市',
+      type: 'select',
+      label: '市',
       field: 'city',
-      col: { xs: 24, sm: 12 },
-      options: cityOptions
+      col: { xs: 24, sm: 8 },
+      request: (form: any) => getAreaList({ type: 'city', code: form.province }),
+      resultFormat: (res) => res.data.map((i: any) => ({ label: i.label, value: i.code })),
+      cascader: ['area']
     },
     {
-      type: 'tree-select',
-      label: '部门',
-      field: 'dept',
-      col: { xs: 24, sm: 12 },
-      data: deptData
-    },
-    {
-      type: 'textarea',
-      label: '备注',
-      field: 'remark',
-      span: 24,
-      item: { extra: '这里是额外信息' }
+      type: 'select',
+      label: '区',
+      field: 'area',
+      col: { xs: 24, sm: 8 },
+      request: (form: any) => getAreaList({ type: 'area', code: form.city }),
+      resultFormat: (res) => res.data.map((i: any) => ({ label: i.label, value: i.code }))
     },
     {
       type: 'input',
