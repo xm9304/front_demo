@@ -19,6 +19,7 @@ import { isExternal } from '@/utils/validate'
 import { isPhone } from '@/utils'
 import type { RouteRecordRaw } from 'vue-router'
 import type { CSSProperties } from 'vue'
+import { useDevice } from '@/hooks'
 
 interface Props {
   menus?: RouteRecordRaw[]
@@ -31,6 +32,7 @@ const route = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
 const routeStore = useRouteStore()
+const { isDesktop } = useDevice()
 const sidebarRoutes = computed(() => (props.menus ? props.menus : routeStore.routes))
 // console.log('sidebarRoutes', sidebarRoutes.value)
 
@@ -48,12 +50,10 @@ const autoOpenSelected = computed(() => {
 })
 
 const menuStyle = computed(() => {
-  if (appStore.layout === 'left') {
-    return { width: '100%', height: '100%' } as CSSProperties
-  }
-  if (appStore.layout === 'mix' && !isPhone()) {
+  if (appStore.layout === 'mix' && !isDesktop) {
     return { width: '200px', height: '100%' } as CSSProperties
   }
+  return { width: '100%', height: '100%' } as CSSProperties
 })
 
 // 当前页面激活菜单路径，先从路由里面找
