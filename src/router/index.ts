@@ -32,16 +32,17 @@ export const constantRoutes: RouteRecordRaw[] = [
     meta: { hidden: true }
   },
   {
-    path: '',
+    path: '/',
     name: 'Home',
     component: Layout,
     redirect: '/home',
+    meta: { hidden: false },
     children: [
       {
         path: '/home',
         component: () => import('@/views/home/index.vue'),
         name: 'Home',
-        meta: { title: '首页', icon: 'icon-dashboard', svgIcon: 'menu-home', affix: true }
+        meta: { title: '首页', icon: 'icon-dashboard', svgIcon: 'menu-home', affix: true, hidden: false }
       }
     ]
   }

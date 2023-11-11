@@ -79,7 +79,9 @@
           <a-table-column title="菜单图标" data-index="icon" :width="100" align="center">
             <template #cell="{ record }">
               <GiSvgIcon v-if="record.svgIcon" :size="24" :name="record.svgIcon"></GiSvgIcon>
-              <component v-else :is="record.icon" :size="24"></component>
+              <template v-else>
+                <component v-if="record.icon" :is="record.icon" :size="24"></component>
+              </template>
             </template>
           </a-table-column>
           <a-table-column title="状态" :width="80" align="center">
@@ -143,7 +145,7 @@ import AddMenuModal from './AddMenuModal.vue'
 import { getSystemMenuList, type MenuItem } from '@/apis'
 import { Drawer, type TableInstance } from '@arco-design/web-vue'
 import { isExternal } from '@/utils/validate'
-import { transformPathToName, isPhone } from '@/utils/common'
+import { transformPathToName, isPhone } from '@/utils'
 import GiCodeView from '@/components/GiCodeView/index.vue'
 
 defineOptions({ name: 'SystemMenu' })

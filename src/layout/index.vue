@@ -1,29 +1,16 @@
 <template>
-  <a-layout class="layout">
-    <Asider></Asider>
-    <a-layout class="layout-right">
-      <Header></Header>
-      <Tabs></Tabs>
-      <Main></Main>
-    </a-layout>
-  </a-layout>
+  <LayoutMix v-if="appStore.layout === 'mix' && !isPhone()"></LayoutMix>
+  <LayoutDefault v-else></LayoutDefault>
 </template>
 
 <script setup lang="ts">
-import Asider from './components/Asider/index.vue'
-import Header from './components/Header/index.vue'
-import Main from './components/Main.vue'
-import Tabs from './components/Tabs/index.vue'
+import LayoutDefault from './LayoutDefault.vue'
+import LayoutMix from './LayoutMix.vue'
+import { useAppStore } from '@/stores'
+import { isPhone } from '@/utils'
 
 defineOptions({ name: 'Layout' })
+const appStore = useAppStore()
 </script>
 
-<style lang="scss" scoped>
-.layout {
-  height: 100%;
-  flex-direction: row;
-  &-right {
-    overflow: hidden;
-  }
-}
-</style>
+<style lang="scss" scoped></style>
