@@ -16,6 +16,7 @@ export default function () {
     () => width,
     () => {
       device.value = width.value < 768 ? 'mobile' : 'desktop'
+      console.log(width.value, device.value)
     },
     { immediate: true }
   )
