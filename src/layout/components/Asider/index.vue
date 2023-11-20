@@ -1,5 +1,9 @@
 <template>
-  <div class="asider" :class="{ 'asider-h5': isMobile(), 'app-menu-dark': appStore.menuDark }">
+  <div
+    class="asider"
+    :class="{ 'asider-h5': isMobile(), 'app-menu-dark': appStore.menuDark }"
+    :style="appStore.menuDark ? appStore.themeCSSVar : undefined"
+  >
     <template v-if="isMobile()">
       <a-drawer
         v-model:visible="appStore.menuCollapse"
@@ -67,6 +71,10 @@ const handleCollapse = (isCollapsed: boolean) => {
   .arco-menu-title {
     display: none;
   }
+}
+
+:deep(.arco-menu-vertical .arco-menu-inline-header .arco-menu-icon-suffix) {
+  transition: all 0.3s;
 }
 
 :deep(.arco-drawer-body) {
