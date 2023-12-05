@@ -21,9 +21,5 @@
   "extends": "@vue/tsconfig/tsconfig.web.json",
   "include": ["src/**/*", "src/**/*.vue", "src/types/*.d.ts", "public", "vite.config.ts"],
   "esModuleInterop": true,
-  "references": [
-    {
-      "path": "./tsconfig.vite-config.json"
-    }
-  ]
+  "references": []
 }
