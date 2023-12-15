@@ -1,1 +1,0 @@
-import{_ as e}from"./Card1.vue_vue_type_script_setup_true_lang-bcfa4965.js";import"./GiForm.vue_vue_type_script_setup_true_lang-9c1f5bb1.js";import"./index-e52c4d6b.js";import"./index-ca75246d.js";export{e as default};
