@@ -1,1 +1,0 @@
-import{S as s,U as e}from"./index-f2e976d2.js";function t(t){return s.get(`${e}/system/user`,t)}function r(t){return s.get(`${e}/system/user/detail`,t)}function n(t){return s.post(`${e}/system/user/save`,t)}function u(t){return s.post(`${e}/system/user/delete`,t)}export{t as a,u as d,r as g,n as s};
