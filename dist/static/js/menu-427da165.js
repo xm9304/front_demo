@@ -1,1 +1,0 @@
-import{S as t,U as e}from"./index-44530a23.js";function s(){return t.get(`${e}/system/menu`)}function n(s){return t.get(`${e}/system/menu/detail`,s)}function u(s){return t.post(`${e}/system/menu/save`,s)}function r(){return t.get(`${e}/system/menu/options`)}export{s as a,r as b,n as g,u as s};

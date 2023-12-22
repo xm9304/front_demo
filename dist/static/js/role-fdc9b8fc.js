@@ -1,0 +1,1 @@
+import{S as e}from"./index-7473d946.js";function t(t){return e.get("/system/role",t)}function s(t){return e.get("/system/role/detail",t)}function r(t){return e.post("/system/role/save",t)}function n(t){return e.post("/system/role/delete",t)}function o(t){return e.get("/system/role/menuIds",t)}export{o as a,t as b,n as d,s as g,r as s};

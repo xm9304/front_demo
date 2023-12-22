@@ -1,0 +1,1 @@
+import{S as s}from"./index-7473d946.js";function e(e){return s.get("/system/user",e)}function t(e){return s.get("/system/user/detail",e)}function r(e){return s.post("/system/user/save",e)}function n(e){return s.post("/system/user/delete",e)}export{e as a,n as d,t as g,r as s};
