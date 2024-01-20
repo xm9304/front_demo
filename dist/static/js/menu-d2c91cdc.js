@@ -1,0 +1,1 @@
+import{S as t}from"./index-25201ada.js";function e(){return t.get("/system/menu")}function n(e){return t.get("/system/menu/detail",e)}function s(e){return t.post("/system/menu/save",e)}function u(){return t.get("/system/menu/options")}export{e as a,u as b,n as g,s};
